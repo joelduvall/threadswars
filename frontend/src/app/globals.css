@@ -1,0 +1,286 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  .icon {
+    @apply flex flex-col items-center justify-center text-sm font-light pr-6 pl-6 pt-1 pb-1;
+  }
+
+  .profile-img {
+    @apply align-middle ;
+    border-top-left-radius: 50%;
+    border-top-right-radius: 50%;
+    border-bottom-left-radius: 50%;
+    border-bottom-right-radius: 50%;
+    outline: 0.5px solid hsl(var(--border));
+    outline-offset: -0.5px;
+  }
+  
+  .profile-img-container {
+    @apply flex;
+    background-color: hsl(var(--background));
+    border-top-left-radius: 50%;
+    border-top-right-radius: 50%;
+    border-bottom-left-radius: 50%;
+    border-bottom-right-radius: 50%;
+   
+  }
+
+  .header {
+    @apply flex items-center justify-between p-4 ;
+    background-color: hsl(var(--background));
+  }
+
+  .thread-tool-button {
+    @apply flex justify-center flex-1 pl-0 pr-0 h-8 w-8
+  }
+
+  /* .post-button {
+    @apply inline-flex h-9 p-0 m-0 w-full font-semibold items-center justify-center;
+    background-color: rgb(255, 255, 255);
+    border-color: rgba(0, 0, 0, 0.4);
+    border-style: solid;
+    border-width: 0;
+    border-radius: 243px;
+  } */
+
+  .post-button {
+    @apply enabled:opacity-100 disabled:opacity-30 inline-flex h-9 p-0 m-0 w-full font-semibold items-center justify-center;
+    background-color: rgb(255, 255, 255);
+    opacity: .3;
+    border-color: rgba(0, 0, 0, 0.4);
+    border-style: solid;
+    border-width: 0;
+    border-radius: 243px;    
+  }
+
+  .signin-button {
+    @apply inline-flex h-9 p-0 m-0 w-full font-semibold items-center justify-center;
+    background-color: rgb(255, 255, 255);
+    opacity: .9;
+    border-color: rgba(0, 0, 0, 0.4);
+    border-style: solid;
+    border-width: 0;
+    border-radius: 243px;
+  } 
+
+  .thread-package {
+    @apply flex flex-col;
+    /* pt-3 pb-4 border-top-width: 0.5px;
+    border-top-color: var(--outline); */
+  }
+
+  .thread-package .thread-package-flex-filler {
+    @apply block relative box-border z-0;
+  }
+
+  .thread-container {
+    @apply block relative outline-none;
+  }
+
+  .lead-thread-wrapper {
+    @apply block pt-3;
+    border-top-width: 0.5px;
+    border-top-color: var(--outline);
+    border-top-style: solid
+  }
+
+  .lead-thread-wrapper-no-reply {
+    @apply pb-3;
+  }
+
+  .reply-thread-wrapper {
+    @apply block pt-3 pb-3;      
+  }  
+
+  .thread-grid {
+    /* Thread grid has 48 px wide first column and a second column taking up the rest, */
+    /* with a 21px high first row, a 19px high second row, and the rest of the rows taking up the rest of the space. */
+    @apply grid;
+    grid-template-columns: 48px minmax(0, 1fr);
+    grid-template-rows: 21px 19px max-content max-content;
+  }
+
+  .thread-grid .threaderer-cell {
+    @apply block pt-1;
+    grid-row-end: span 2;
+    grid-row-start: 1;
+    grid-column-start: 1;
+
+  }
+
+  .thread-grid .threaderer-name-cell {
+    @apply block;
+    grid-row-start: 1;
+    grid-column-start: 2;
+    align-self: flex-end;
+  }
+  
+  .thread-grid .threader-info {
+      @apply grid h-full ;
+      grid-template-columns: 1fr max-content;
+  }
+
+  .thread-grid .thread-link-indicators-cell {
+    @apply row-start-3 row-span-3 col-start-1;
+  }
+
+  .thread-grid .thread-content-cell {
+    @apply row-start-2 row-span-3 col-start-2;
+  }
+
+  .thread-grid .thread-footer-cell {
+    @apply row-start-5 row-span-1 col-start-2 col-span-1;
+  }
+
+  .verified {
+    /* @apply feather feather-check-circle; */
+    --fill: rgb(0, 149, 246); 
+    --height: 12px;
+    --width:12px;
+    height:var(--height, revert);
+    width: var(--width, revert);
+    fill: var(--fill, revert); 
+    position: relative; 
+    display:block; 
+    fill-rule:evenodd;
+  }
+
+  .thread-text-content {
+    @apply  overflow-x-hidden overflow-y-hidden;
+    margin-top: 3px;
+    font-size: 0.9375rem;
+    line-height: 140%;
+    white-space: pre-wrap;
+  }
+
+  .thread-media-container {
+    @apply inline-flex flex-row outline-none transition-transform list-none duration-200 select-none relative items-stretch box-border z-0 p-0 m-0 bg-transparent touch-manipulation;
+    
+    border-style: solid;
+    border-width: 0;
+    border-bottom-color: hsl(var(--border));
+    border-top-color: hsl(var(--border));
+    border-right-color: hsl(var(--border));
+    border-left-color: hsl(var(--border));
+    border-radius: 8px;
+    text-decoration: none;
+    
+  }
+
+  .thread-image-container {
+    @apply grid;
+    max-height: var(--maxHeight);
+    aspect-ratio: var(--aspectRatio);
+    grid-template-rows: minmax(0,1fr);
+    grid-template-columns: minmax(0,1fr);
+  }
+
+  .thread-action-item {
+    @apply inline-flex  basis-auto cursor-pointer outline-none no-underline box-border select-none pt-0 pb-0 pl-3 pr-3 m-0 min-w-0 border-solid bg-transparent touch-manipulation items-center justify-center scale-100 relative gap-x-1 transition-transform;
+    border-color: rgba(0, 0, 0, 0.4);
+    text-decoration: none;
+    border-radius: 1000px;
+  }
+
+  
+}
+
+@layer base {
+  :root {
+    
+    --background: 0, 0%, 6%;
+    /* --foreground: 222.2 84% 4.9%; */
+    --foreground: 365 100% 100%;
+    --secondary-foreground: 0 0 46.7%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 84% 4.9%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 84% 4.9%;
+
+    --primary: 222.2 47.4% 11.2%;
+    --primary-foreground: 210 40% 98%;
+
+    --secondary: 210 40% 96.1%;
+    --secondary-foreground: 0 0 46.7%;
+
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+
+    --accent: 210 40% 96.1%;
+    --accent-foreground: 222.2 47.4% 11.2%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+
+    /* --border: 214.3 31.8% 91.4%; */
+
+    
+    --border: 214.3, 31.8%, 91.4%, 0.15;
+    
+    
+    
+    --input: 214.3 31.8% 91.4%;
+    --ring: 222.2 84% 4.9%;
+    --outline: rgba(243, 245, 247, 0.15);
+
+    --radius: 0.5rem;
+
+
+    --font-weight-system-bold: 700;
+    --font-weight-system-extra-bold: 800;
+    --font-weight-system-extra-light: 200;
+    --font-weight-system-light: 300;
+    --font-weight-system-medium: 500;
+    --font-weight-system-regular: 400;
+    --font-weight-system-semibold: 600;
+
+  }
+
+  .dark {
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
+
+    --card: 222.2 84% 4.9%;
+    --card-foreground: 210 40% 98%;
+
+    --popover: 222.2 84% 4.9%;
+    --popover-foreground: 210 40% 98%;
+
+    --primary: 210 40% 98%;
+    --primary-foreground: 222.2 47.4% 11.2%;
+
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
+
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 212.7 26.8% 83.9%;
+  }
+
+  * {
+    @apply border-border;
+    
+  }
+  body {
+    @apply bg-background text-foreground;
+    font-family: 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'Helvetica', 'Arial', sans-serif;
+    font-size: 15px;
+  }
+
+  .secondary-text {
+    color: hsl(0 0 46.7%);
+  }
+}

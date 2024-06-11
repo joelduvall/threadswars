@@ -1,0 +1,30 @@
+version: '3.8'
+services:
+  frontenddev:
+    image: mcr.microsoft.com/devcontainers/typescript-node:1-20-bullseye
+    network_mode: service:mongodb
+    volumes:
+      - ../..:/workspaces:cached
+    # ports:
+    #   - "3000:3000"
+    command: sleep infinity
+  backendnest:
+    image: mcr.microsoft.com/devcontainers/typescript-node:1-20-bullseye
+    network_mode: service:mongodb
+    volumes:
+      - ../..:/workspaces:cached
+    # ports:
+    #   - "3000:3000"
+    command: sleep infinity
+  mongodb:
+    image: mongo:latest
+    restart: unless-stopped
+    volumes:
+      - mongodb_data:/data/db
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: example
+    ports:
+      - "27017:27017"
+volumes:
+  mongodb_data:

@@ -2,6 +2,8 @@
 
 # dependencies
 /node_modules
+/backend_nest/node_modules/
+/frontend/node_modules/
 /.pnp
 .pnp.js
 .yarn/install-state.gz
@@ -10,7 +12,7 @@
 /coverage
 
 # next.js
-/.next/
+/frontend/.next/
 /out/
 
 # production
@@ -34,3 +36,61 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+#backend
+# compiled output
+/backend_nest/dist
+/backend_nest/node_modules
+/backend_nest/build
+
+# Logs
+logs
+*.log
+npm-debug.log*
+pnpm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+
+# OS
+/backend_nest/.DS_Store
+
+# Tests
+/backend_nest/coverage
+/backend_nest/.nyc_output
+
+# IDEs and editors
+/backend_nest/.idea
+/backend_nest/.project
+/backend_nest/.classpath
+/backend_nest/.c9/
+/backend_nest/*.launch
+/backend_nest/.settings/
+/backend_nest/*.sublime-workspace
+
+# IDE - VSCode
+/backend_nest/.vscode/*
+!/backend_nest/.vscode/settings.json
+!/backend_nest/.vscode/tasks.json
+!/backend_nest/.vscode/launch.json
+!/backend_nest/.vscode/extensions.json
+
+# dotenv environment variable files
+/backend_nest/.env
+/backend_nest/.env.development.local
+/backend_nest/.env.test.local
+/backend_nest/.env.production.local
+/backend_nest/.env.local
+
+# temp directory
+/backend_nest/.temp
+/backend_nest/.tmp
+
+# Runtime data
+/backend_nest/pids
+/backend_nest/*.pid
+/backend_nest/*.seed
+/backend_nest/*.pid.lock
+
+# Diagnostic reports (https://nodejs.org/api/report.html)
+/backend_nest/report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json

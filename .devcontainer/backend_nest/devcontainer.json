@@ -1,0 +1,37 @@
+// For format details, see https://aka.ms/devcontainer.json. For config options, see the
+// README at: https://github.com/devcontainers/templates/tree/main/src/typescript-node
+{
+	"name": "backend_nest",
+	"dockerComposeFile": "../docker-compose.yaml",
+	// Or use a Dockerfile or Docker Compose file. More info: https://containers.dev/guide/dockerfile
+	"workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}/backend_nest",
+	"service": "backendnest",
+	"features": {
+		"ghcr.io/devcontainers/features/git-lfs:1": {},
+		"ghcr.io/devcontainers-contrib/features/starship:1": {}
+	},
+
+	// Features to add to the dev container. More info: https://containers.dev/features.
+	// "features": {},
+
+	// Use 'forwardPorts' to make a list of ports inside the container available locally.
+	// "forwardPorts": [],
+
+	// Use 'postCreateCommand' to run commands after the container is created.
+	"postCreateCommand": "zsh && starship preset tokyo-night -o ~/.config/starship.toml && eval \"$(starship init zsh)\"",
+
+	// Configure tool-specific properties.
+	"customizations": {
+		"starship.prompt": "tokyo-night",
+		"vscode": {
+			"extensions": [
+				"mongodb.mongodb-vscode"
+			]
+		}
+
+	}
+
+
+	// Uncomment to connect as root instead. More info: https://aka.ms/dev-containers-non-root.
+	// "remoteUser": "root"
+}
