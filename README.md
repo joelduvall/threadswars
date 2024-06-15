@@ -5,7 +5,7 @@ The first implementations is using NextJS, NestJS, and MongoDB. It uses [Shadcn]
 
 ## Project Setup and Debugging Guide
 
-This document provides a comprehensive guide on how to build and debug the project, which consists of a frontend built with Next.js, a backend powered by NestJS, and MongoDB and Azure Storage for data storage.
+This is a guide on how to build and debug the project, which consists of a frontend built with Next.js, a backend powered by NestJS, and MongoDB and Azure Storage for data storage.
 
 ### Prerequisites
 
