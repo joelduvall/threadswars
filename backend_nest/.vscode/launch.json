@@ -7,7 +7,7 @@
     {
       "type": "node",
       "request": "launch",
-      "name": "Debug Nest Framework test 1",
+      "name": "Debug Nest Framework",
       "skipFiles": [
         "<node_internals>/**"
       ],
