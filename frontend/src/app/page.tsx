@@ -17,7 +17,7 @@ export default async function Home() {
 
   return (
     <main className="flex flex-col" >
-      <div className="flex flex-col ml-auto mr-auto  max-w-xl">
+      <div className="flex flex-col ml-auto mr-auto  max-w-xl min-w-96">
         <SignedIn>
           <QuickPost user={user} ></QuickPost>
         </SignedIn>
