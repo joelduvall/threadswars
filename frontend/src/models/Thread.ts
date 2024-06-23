@@ -1,7 +1,7 @@
 import { IUser } from "./user";
 
 export interface IMedia {
-    mediaType: string;
+    type: string;
     url: string;
     height: number;
     width: number;

@@ -8,7 +8,7 @@
  */
 "use client";
 
-import React, { useActionState, useState } from 'react'
+import React, { useActionState, useMemo, useRef, useState } from 'react'
 import ProfileLink from './ProfileLink'
 import {
   Dialog,
@@ -29,6 +29,10 @@ import TextArea from './TextArea'
 import addThread from '@/app/add-thread'
 import { ZodIssue } from 'zod'
 import { useFormState } from 'react-dom'
+import { Images, X } from 'lucide-react';
+import { Button } from './ui/button';
+import { Carousel, CarouselApi, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from './ui/carousel';
+import Image from 'next/image';
 
 type QuickPostProps = {
   user: IUser;
@@ -36,9 +40,14 @@ type QuickPostProps = {
 
 export default function QuickPost({ user }: QuickPostProps ) {
 
+  const [mainApi, setMainApi] = useState<CarouselApi>();
   const [open, setOpen] = useState(false);
   const [invalidOrProcessing, setInValidOrProcessing] = useState(true);
   const [state, formAction] = useFormState(handleSubmit, null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [preview, setPreview] = useState<string[]>([]);
+  const [current, setCurrent] = useState(0);
+  const [currentFiles, setCurrentFiles] = useState<File[] | null>(null);
 
   /**
    * Handles when the text input field changes. Used to expand the text area dynamically 
@@ -65,9 +74,105 @@ export default function QuickPost({ user }: QuickPostProps ) {
     setInValidOrProcessing(false);
 
     await addThread(prevState, formData);
-    
+    previewImages.length = 0;
     setOpen(false);
   }
+
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+
+    // if no files are selected return
+    if (!e.target.files) {
+      return;
+    }
+
+    // add files from e in currentFiles state where the files does not already exist
+    setCurrentFiles(() => {
+      const dataTransfer = new DataTransfer();
+      
+      //add each current file to the dataTransfer files
+      for (const file of currentFiles || []) {
+        dataTransfer.items.add(file);
+      }
+
+      for (const file of Array.from(e.target.files || [])) {
+        if (!currentFiles?.find((f) => f.name === file.name)) {
+          dataTransfer.items.add(file);
+        }
+      }
+      if (fileInputRef.current) {
+        fileInputRef.current.files = dataTransfer.files;
+      }
+      
+      return  Array.from(dataTransfer.files);
+    });
+
+
+    // create an list for storing strings
+    const files: string[] | null = [];
+
+    // for each file in the target files push the url of the file to the files list
+    for (const file of Array.from(e.target.files || [])) {
+      const url = URL.createObjectURL(file);
+      files.push(url);
+    }
+    
+    setPreview(files);       
+
+  };
+
+  const handleClick = (index: number) => {
+    return;
+    // if (!mainApi || !thumbnailApi) {
+    //   return;
+    // }
+    // thumbnailApi.scrollTo(index);
+    // mainApi.scrollTo(index);
+    // setCurrent(index);
+  };
+
+  const handleRemoveImageClick = (index: number) => {
+    // remove image from preview
+
+    const newPreview: string[] | null = [...preview ];
+    newPreview.splice(index, 1);
+    setPreview(newPreview);
+
+  }
+
+  const previewImages = useMemo(
+    () =>
+      preview?.map((image, index) => (
+        <CarouselItem
+          key={index} 
+          className="relative  object-contain"
+           
+          style={{ '--maxHeight': '430px', '--aspectRatio': 344 / 430, 'max-height': 'var(--maxHeight)', 'max-width': '344px',
+            'aspect-ratio': 'var(--aspectRatio)', 'flexBasis': "unset"} as React.CSSProperties}
+          onClick={() => handleClick(index)}
+        >
+          <Image
+            className={`${index === current ? "border-2" : ""} & ""`  }
+            src={image}
+            height={430}
+            width={344}            
+            sizes="(max-width: 344px) calc(100vw - 24px), 320px"
+            alt={`Carousel Thumbnail Image ${index + 1}`}
+            style={{ objectFit: "cover", height: "unset" }}
+          />
+          <div style={{ display: 'block', position: 'absolute', top: '10px', right: '10px'  } }>
+            <Button
+              type='button'
+              variant="ghost" size="icon"
+              className="flex h-8 w-8"       
+              onClick={() => handleRemoveImageClick(index)}                
+            >
+              <X />
+            </Button>
+          </div>
+        </CarouselItem>
+      )),
+    [preview, current],
+  );
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -91,7 +196,7 @@ export default function QuickPost({ user }: QuickPostProps ) {
           {/* -------------------------------------------------------------------- */}
           {/* <threaderer>  | <username> <is validated> <time Since posted>        */}
           {/* <User AVATAR> |         <content>                                    */}
-          {/* <link>        |         <content>                                    */}
+          {/* <chil link>   |         <content>                                    */}
           {/* <indicator>   |         <content>                                    */}
           {/* <indicator>   |         <footer>                                     */}
           {/* -------------------------------------------------------------------- */}
@@ -101,7 +206,8 @@ export default function QuickPost({ user }: QuickPostProps ) {
               <Avatar>
                 <AvatarImage src={ user.avatar } alt={ getUserDisplayName(user) } />
                 <AvatarFallback>CN</AvatarFallback>
-              </Avatar>              
+              </Avatar>     
+        
               <input type="hidden" name="parentThreadId" value="" />
             </div> 
             <div className='threaderer-name-cell'> {/* Row 1 col2 */}
@@ -149,7 +255,56 @@ export default function QuickPost({ user }: QuickPostProps ) {
                 <div className='thread-text-content'>
                   <TextArea formFieldName='content' placeholder='Start Your Thread Here...' onChange={ onThreadFieldChanged }></TextArea>
                 </div>
+                <div>
+                  {/* Preview */}
+                  {preview && (
+                    <div>
+                    <Carousel setApi={setMainApi} opts={{ align: "start"}} className='w-full max-w-s'>
+                      <CarouselContent className="m-1">{previewImages}</CarouselContent>
+                    </Carousel>
+                    {/* <Carousel setApi={setThumbnailApi}>
+                      <CarouselContent className="m-1">{thumbnailImages}</CarouselContent>
+                    </Carousel> */}
+                    {/* // <div className='flex items-center h-8 -ml-2 mt-1'>
+                    //   <img src={preview} alt="Preview" className="w-8 h-8 object-cover" />
+                    //   <Button
+                    //     type='button'
+                    //     variant="ghost" size="icon"
+                    //     className="flex h-8 w-8"
+                    //     onClick={() => setPreview(null)}
+                    //   >
+                    //     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="rgb(0, 149, 246);" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    //       <line x1="18" y1="6" x2="6" y2="18"></line>
+                    //       <line x1="6" y1="6" x2="18" y2="18"></line>
+                    //     </svg>
+                    //   </Button>
+                    // </div> */}
+                    </div>
+                  )}
+
+                </div>             
+                <div className='flex items-center h-8 -ml-2 mt-1'> 
+                    <Button
+                      type='button'
+                      variant="ghost" size="icon"
+                      className="flex h-8 w-8"
+                      
+                      onClick={() => fileInputRef.current?.click()}                
+                    >
+                      <Images />
+                    </Button>
+                    <input
+                      ref={fileInputRef}
+                      type="file"
+                      name="images"
+                      accept="image/jpeg,image/png,video/mp4,video/quicktime"
+                      hidden
+                      onChange={handleImageChange}
+                      multiple
+                    />
+                </div>
               </div>
+              
             </div>
 
             <div className='thread-footer-cell'> {/* Row 5 col2  --- Thread Footer Options --- */}
