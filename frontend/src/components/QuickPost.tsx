@@ -33,6 +33,8 @@ import { Images, X } from 'lucide-react';
 import { Button } from './ui/button';
 import { Carousel, CarouselApi, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from './ui/carousel';
 import Image from 'next/image';
+import { toast } from 'sonner';
+import Thread from './Thread';
 
 type QuickPostProps = {
   user: IUser;
@@ -45,7 +47,7 @@ export default function QuickPost({ user }: QuickPostProps ) {
   const [invalidOrProcessing, setInValidOrProcessing] = useState(true);
   const [state, formAction] = useFormState(handleSubmit, null);
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const [preview, setPreview] = useState<string[]>([]);
+  //const [preview, setPreview] = useState<string[]>([]);
   const [current, setCurrent] = useState(0);
   const [currentFiles, setCurrentFiles] = useState<File[] | null>(null);
 
@@ -69,13 +71,21 @@ export default function QuickPost({ user }: QuickPostProps ) {
    * Handles submission of the new thread form disables submit butting, adds thread, closes the dialog.
    * @param prevState 
    * @param formData 
+   * const promise = handlePostAction(formData);
+          toast.promise(promise, {
+            loading: "Creating post...",
+            success: "Post created!",
+            error: (e) => "Error creating post: " + e.message,
+          });
    */
   async function handleSubmit (prevState: any, formData: any) {
-    setInValidOrProcessing(false);
-
+    setInValidOrProcessing(true);
+    // sleep running thread for 1 second
+    await new Promise((resolve) => setTimeout(resolve, 1000));
     await addThread(prevState, formData);
-    previewImages.length = 0;
     setOpen(false);
+    setCurrentFiles(null);
+    toast.success("Thread created!");
   }
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -107,16 +117,18 @@ export default function QuickPost({ user }: QuickPostProps ) {
     });
 
 
-    // create an list for storing strings
-    const files: string[] | null = [];
+    // // create an list for storing strings
+    // const files: string[] | null = [];
 
-    // for each file in the target files push the url of the file to the files list
-    for (const file of Array.from(e.target.files || [])) {
-      const url = URL.createObjectURL(file);
-      files.push(url);
-    }
+    // // for each file in the target files push the url of the file to the files list
+    // for (const file of Array.from(e.target.files || [])) {
+    //   //const url = URL.createObjectURL(file);
+    //   files.push(file);
+    // }
     
-    setPreview(files);       
+    // setCurrentFiles(dataTransfer.files);       
+
+    setInValidOrProcessing(false);
 
   };
 
@@ -130,18 +142,25 @@ export default function QuickPost({ user }: QuickPostProps ) {
     // setCurrent(index);
   };
 
-  const handleRemoveImageClick = (index: number) => {
-    // remove image from preview
-
-    const newPreview: string[] | null = [...preview ];
-    newPreview.splice(index, 1);
-    setPreview(newPreview);
-
-  }
+  
 
   const previewImages = useMemo(
-    () =>
-      preview?.map((image, index) => (
+    () => {
+      const handleRemoveImageClick = (index: number) => {
+        // remove image from preview
+    
+        const currentFilesArray: File[] = currentFiles || [];
+        const newPreview: File[] | null = [...currentFilesArray ];
+        newPreview.splice(index, 1);
+        setCurrentFiles(newPreview);
+        if (newPreview.length === 0) {
+          setInValidOrProcessing(true);
+        }
+    
+      }
+
+      
+      return currentFiles?.map((image, index) => (
         <CarouselItem
           key={index} 
           className="relative  object-contain"
@@ -151,10 +170,10 @@ export default function QuickPost({ user }: QuickPostProps ) {
           onClick={() => handleClick(index)}
         >
           <Image
-            className={`${index === current ? "border-2" : ""} & ""`  }
-            src={image}
+            className="border-2"
+            src={URL.createObjectURL(image)}
             height={430}
-            width={344}            
+            width={344}
             sizes="(max-width: 344px) calc(100vw - 24px), 320px"
             alt={`Carousel Thumbnail Image ${index + 1}`}
             style={{ objectFit: "cover", height: "unset" }}
@@ -170,8 +189,8 @@ export default function QuickPost({ user }: QuickPostProps ) {
             </Button>
           </div>
         </CarouselItem>
-      )),
-    [preview, current],
+      ))},
+    [currentFiles],
   );
 
   return (
@@ -257,7 +276,7 @@ export default function QuickPost({ user }: QuickPostProps ) {
                 </div>
                 <div>
                   {/* Preview */}
-                  {preview && (
+                  {currentFiles && (
                     <div>
                     <Carousel setApi={setMainApi} opts={{ align: "start"}} className='w-full max-w-s'>
                       <CarouselContent className="m-1">{previewImages}</CarouselContent>

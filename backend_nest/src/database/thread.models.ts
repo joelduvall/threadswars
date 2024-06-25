@@ -44,7 +44,7 @@ const IThreadMediaSchema = new mongoose.Schema({
 export const threadSchema = new Schema<IThread, IThreadModel, IThreadMethods>({
   // _id: { type: String, required: false },
   parentThread: { type: Schema.Types.ObjectId, ref: 'Thread', required: false },
-  content: { type: String, required: true },
+  content: { type: String, required: false },
   user: { type: Schema.Types.ObjectId, ref: 'User', required: true },
   media: { type: [IThreadMediaSchema], default: [] },
   likes: { type: [String], default: [] },

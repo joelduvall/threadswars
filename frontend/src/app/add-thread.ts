@@ -18,10 +18,11 @@ import {
 } from '@azure/storage-blob';
 
 const schema = z.object({
-  content: z.string().min(1, "There must be some content"),
+  content: z.string().optional(), //min(1, "There must be some content"),
   userId: z.string().optional(),
+  images: z.array(z.string()).optional(),
   parentThreadId: z.string().optional(),
-});
+}).refine(data => (data.content || (data.images && data.images.length > 0), { 'message': "Either content must have a value or there must be 1 or more images"} ));
 
 function getSharedKeyCredential() {
   const accountName = process.env.AZURE_STORAGE_ACCOUNT_NAME;
@@ -98,16 +99,9 @@ async function uploadImage(
   return image_url;
 }
 
-
 export default async function addThread(_prevState: any, params: FormData) {
 
   const { userId, sessionClaims } = auth();
-  //const { user, isSignedIn, isLoaded } = useUser();
-  // if (userId) {
-  //   const user = await currentUser();
-  //   const params = { external_id: ''};
-  //   const updatedUser = await clerkClient.users.updateUser(userId, params);
-  // }
   
   const validation = schema.safeParse({
     content: params.get("content"),
@@ -120,25 +114,27 @@ export default async function addThread(_prevState: any, params: FormData) {
     const mediaList: IMedia[] = [];
 
     for (const file of files) {
-      const imageBuffer = await file.arrayBuffer();
-      const sharpImage = await sharp(imageBuffer).metadata();
+      if (file.size > 0) {
+        const imageBuffer = await file.arrayBuffer();
+        const sharpImage = await sharp(imageBuffer).metadata();
 
-      const upload = await uploadImage(
-        imageBuffer,
-        process.env.AZURE_STORAGE_ACCOUNT_NAME || '',
-        process.env.AZURE_STORAGE_THREAD_CONTAINER_NAME  || '',
-        process.env.AZURE_STORAGE_ACCOUNT_KEY  || ''
-      );
+        const upload = await uploadImage(
+          imageBuffer,
+          process.env.AZURE_STORAGE_ACCOUNT_NAME || '',
+          process.env.AZURE_STORAGE_THREAD_CONTAINER_NAME  || '',
+          process.env.AZURE_STORAGE_ACCOUNT_KEY  || ''
+        );
 
-      const media: IMedia = {
-        url: upload,
-        type: file.type,
-        height: sharpImage.height || 0,
-        width: sharpImage.width || 0,
-      };
+        const media: IMedia = {
+          url: upload,
+          type: file.type,
+          height: sharpImage.height || 0,
+          width: sharpImage.width || 0,
+        };
 
-      mediaList.push(media);
+        mediaList.push(media);
     }
+  }
 
 
     const url = process.env.THREAD_WARS_BACKEND_URL
@@ -148,21 +144,22 @@ export default async function addThread(_prevState: any, params: FormData) {
     }
 
     const headers =  {
-      "Content-Type": "application/json",
+        "Content-Type": "application/json",
       "Authorization": `Bearer ${cookies().get("__session")?.value}`
     };
 
     const postData = { ...validation.data, media: mediaList };
 
 
-    const response = await fetch(path.join(url, "/threads"), {
+    const response =  await fetch(path.join(url, "/threads"), {
       method: "POST",
       headers: headers,
       body: JSON.stringify(postData),
     });
   
-    if (!response.ok) {
-      throw new Error("Failed to fetch threads");
+    if (!response.ok) { 
+      console.log(response.statusText);
+      throw new Error("Failed to Add thread");
     }
     // save the data, send an email, etc.
     //redirect("/");

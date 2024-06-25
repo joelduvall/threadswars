@@ -78,8 +78,8 @@ export async function ThreadCore( { thread }: {thread: IThread})  {
             <div className='block mt-2 z-0'> {/* thread media */} 
                 <div className='thread-media-container z-0'>
                 {
-                  thread.media.map((media) => (
-                    <div key={media.url}  className='thread-image-container z-0' style={{ '--maxHeight': '430px', '--aspectRatio': media.width / media.height } as React.CSSProperties}>
+                  thread.media.map((media, index) => (
+                    <div key={index}  className='thread-image-container z-0' style={{ '--maxHeight': '430px', '--aspectRatio': media.width / media.height } as React.CSSProperties}>
                       <picture className='select-none z-0'>
                         <Image  src={media.url} width={media.width} height={media.height} alt="Logo" className=' z-0 rounded-lg outline outline-1 -outline-offset-1 outline-border' /> 
                       </picture>

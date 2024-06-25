@@ -56,7 +56,6 @@ export class ThreadsController {
     //   const user = await this.threadService.createUser(req.user);
     //   req.user.externalId = user.id;
     // }
-
     createThreadDto.userId = req.user.externalId || createThreadDto.userId;
     await this.threadService.createThread(createThreadDto);
     return 'Thread Created';
