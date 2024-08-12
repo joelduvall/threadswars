@@ -158,7 +158,6 @@ export default function QuickPost({ user }: QuickPostProps ) {
         }
     
       }
-
       
       return currentFiles?.map((image, index) => (
         <CarouselItem
@@ -182,10 +181,11 @@ export default function QuickPost({ user }: QuickPostProps ) {
             <Button
               type='button'
               variant="ghost" size="icon"
-              className="flex h-8 w-8"       
+              className="flex h-6 w-6 rounded-3xl hover:text-foreground"
+              style={{ 'backdrop-filter': 'blur(21.5px)', 'backgroundColor': 'rgba(0, 0, 0, 0.4)'} as React.CSSProperties}       
               onClick={() => handleRemoveImageClick(index)}                
             >
-              <X />
+              <X className='h-4 w-4'/>
             </Button>
           </div>
         </CarouselItem>
@@ -204,7 +204,8 @@ export default function QuickPost({ user }: QuickPostProps ) {
                 </div>
                 <div className='flex-shrink block'> 
                     <div className="post-button">
-                      <div className="pl-4 pr-4 overflow-x-hidden overflow-y-hidden overflow-ellipsis justify-center text-black font" >Post</div>
+                      <div className="pl-4 pr-4 overflow-x-hidden overflow-y-hidden overflow-ellipsis justify-center text-black font" >
+                        Post </div>
                     </div>
                 </div>
             </div>
@@ -306,11 +307,14 @@ export default function QuickPost({ user }: QuickPostProps ) {
                     <Button
                       type='button'
                       variant="ghost" size="icon"
-                      className="flex h-8 w-8"
-                      
-                      onClick={() => fileInputRef.current?.click()}                
+                      className="flex h-6 w-auto hover:bg-transparent active:opacity-60"
+                      style={{ 'backdrop-filter': 'blur(21.5px)', 'backgroundColor': 'rgba(0, 0, 0, 0.4)'} as React.CSSProperties}                
+                      onClick={() => fileInputRef.current?.click()}
                     >
-                      <Images />
+                      <Images 
+                        className='h-5 w-5'
+                        style={{ 'stroke': 'rgb(119, 119, 119)' } as React.CSSProperties}
+                      /> { (currentFiles && currentFiles.length > 0) ?  <span className="ml-1" style={{'color': 'rgb(119, 119, 119)' } as React.CSSProperties}>Add</span>: '' }
                     </Button>
                     <input
                       ref={fileInputRef}
