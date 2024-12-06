@@ -5,8 +5,12 @@ services:
     network_mode: service:mongodb
     volumes:
       - ../..:/workspaces:cached
-    # ports:
-    #   - "3000:3000"
+    command: sleep infinity
+  backenddotnet:
+    image: mcr.microsoft.com/devcontainers/sdk:8.0
+    network_mode: service:mongodb
+    volumes:
+      - ../..:/workspaces:cached
     command: sleep infinity
   backendnest:
     image: mcr.microsoft.com/devcontainers/typescript-node:1-20-bullseye

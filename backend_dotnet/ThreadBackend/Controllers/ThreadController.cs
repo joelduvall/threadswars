@@ -17,6 +17,6 @@ namespace ThreadWars.Controllers
     public async Task<List<ThreadEntry>> Get() =>
           await _threadService.GetAsync();
 
-}
+  }
 
 }
