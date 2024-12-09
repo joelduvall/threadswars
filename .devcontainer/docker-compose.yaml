@@ -7,7 +7,7 @@ services:
       - ../..:/workspaces:cached
     command: sleep infinity
   backenddotnet:
-    image: mcr.microsoft.com/devcontainers/sdk:8.0
+    image: mcr.microsoft.com/devcontainers/dotnet:8.0   
     network_mode: service:mongodb
     volumes:
       - ../..:/workspaces:cached
