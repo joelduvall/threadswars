@@ -7,16 +7,25 @@ namespace ThreadWars.Controllers
 {
 
   [ApiController]
-  [Route("api/[controller]")]
+  [Route("api/Thread")]
   public class ThreadController : ControllerBase {
     private readonly IThreadService _threadService;
 
     public ThreadController(IThreadService threadService)  => _threadService = threadService;
 
     [HttpGet]
-    public async Task<List<ThreadEntry>> Get() =>
-          await _threadService.GetAsync();
+    public async Task<List<ThreadEntry>> Get() => await _threadService.GetAsync();
 
+    [HttpGet("{id:length(24)}")]
+    public async Task<ActionResult<ThreadEntry>> Get(string id) {
+      var thread = await _threadService.GetAsync(id);
+
+      if (thread == null) {
+        return NotFound();
+      }
+
+      return Ok(thread);
+    }
   }
 
 }

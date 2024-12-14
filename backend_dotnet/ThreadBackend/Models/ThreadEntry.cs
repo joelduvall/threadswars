@@ -24,6 +24,10 @@ namespace ThreadWars.Models
       public string[]? Replies { get; set; }
 
       [BsonElement("user")]
+      [BsonRepresentation(BsonType.ObjectId)]
+      public string UserId { get; set; }
+
+      [BsonIgnore]
       public IUser? User { get; set; }
 
       [BsonElement("createdAt")]

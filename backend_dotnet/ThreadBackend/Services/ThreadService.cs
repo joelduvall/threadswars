@@ -23,5 +23,11 @@ namespace ThreadWars.Services
             thread => true
           ).ToListAsync();
       } 
+
+      public async Task<ThreadEntry> GetAsync(string id) {
+          return await _threadCollection.Find(
+            thread => thread._id == id
+          ).FirstOrDefaultAsync();
+      }
   }
 }
