@@ -4,14 +4,14 @@ using MongoDB.Bson.Serialization.Serializers;
 using MongoDB.Driver;
 using ThreadWars.Models;
 
-public class ThreadEntrySerializer : SerializerBase<ThreadEntry>
+public class ThreadEntrySerializer : SerializerBase<ThreadEntry>, IBsonDocumentSerializer
 {
-    private readonly IMongoCollection<User> _userCollection;
+    //private readonly IMongoCollection<User> _userCollection;
 
-    public ThreadEntrySerializer(IMongoCollection<User> userCollection)
-    {
-        _userCollection = userCollection;
-    }
+    // public ThreadEntrySerializer(IMongoCollection<User> userCollection)
+    // {
+    //     _userCollection = userCollection;
+    // }
 
     public override ThreadEntry Deserialize(BsonDeserializationContext context, BsonDeserializationArgs args)
     {
@@ -20,8 +20,8 @@ public class ThreadEntrySerializer : SerializerBase<ThreadEntry>
 
         if (threadEntry.UserId != null)
         {
-            var user = _userCollection.Find(u => u.Id == threadEntry.UserId).FirstOrDefault();
-            threadEntry.User = user;
+           // var user = _userCollection.Find(u => u.Id == threadEntry.UserId).FirstOrDefault();
+            //threadEntry.User = user;
         }
 
         return threadEntry;
@@ -31,5 +31,15 @@ public class ThreadEntrySerializer : SerializerBase<ThreadEntry>
     {
         var document = value.ToBsonDocument();
         BsonSerializer.Serialize(context.Writer, document);
+    }
+
+
+    public bool TryGetMemberSerializationInfo(string memberName, out BsonSerializationInfo serializationInfo)
+    {
+        serializationInfo = null;
+        var documentSerializer = BsonSerializer.LookupSerializer<ThreadEntry>();
+        
+        return documentSerializer is IBsonDocumentSerializer bsonDocumentSerializer &&
+               bsonDocumentSerializer.TryGetMemberSerializationInfo(memberName, out serializationInfo);
     }
 }
