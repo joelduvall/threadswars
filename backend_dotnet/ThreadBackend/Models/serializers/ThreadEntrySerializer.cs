@@ -30,7 +30,7 @@ public class ThreadEntrySerializer : SerializerBase<ThreadEntry>, IBsonDocumentS
 
         if (threadEntry.UserId != null)
         {
-            var user = _userCollection.Find(u => u.Id == threadEntry.UserId).FirstOrDefault();
+            var user = _userCollection.Find(u => ObjectId.Parse(u.Id) == ObjectId.Parse(threadEntry.UserId)).FirstOrDefault();
             threadEntry.User = user;
         }
 
