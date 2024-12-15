@@ -6,22 +6,32 @@ using ThreadWars.Models;
 
 public class ThreadEntrySerializer : SerializerBase<ThreadEntry>, IBsonDocumentSerializer
 {
-    //private readonly IMongoCollection<User> _userCollection;
+    private readonly IMongoCollection<User> _userCollection;
 
-    // public ThreadEntrySerializer(IMongoCollection<User> userCollection)
-    // {
-    //     _userCollection = userCollection;
-    // }
+    public ThreadEntrySerializer(IMongoCollection<User> userCollection)
+    {
+        _userCollection = userCollection;
+    }
 
     public override ThreadEntry Deserialize(BsonDeserializationContext context, BsonDeserializationArgs args)
     {
         var document = BsonSerializer.Deserialize<BsonDocument>(context.Reader);
-        var threadEntry = BsonSerializer.Deserialize<ThreadEntry>(document);
+        
+        var threadEntry = new ThreadEntry
+        {
+            _id = document["_id"].AsObjectId.ToString(),
+            Content = document["content"].AsString,
+            Media = document.Contains("media") ? document["media"].AsBsonArray.Select(m => BsonSerializer.Deserialize<ThreadMedia>(m.AsBsonDocument)).ToArray() : null,
+            Likes = document.Contains("likes") ? document["likes"].AsBsonArray.Select(l => l.AsString).ToArray() : null,
+            Replies = document.Contains("replies") ? document["replies"].AsBsonArray.Select(r => r.AsString).ToArray() : null,
+            UserId = document["user"].AsObjectId.ToString(),
+            CreatedAt = document["createdAt"].ToUniversalTime()
+        };
 
         if (threadEntry.UserId != null)
         {
-           // var user = _userCollection.Find(u => u.Id == threadEntry.UserId).FirstOrDefault();
-            //threadEntry.User = user;
+            var user = _userCollection.Find(u => u.Id == threadEntry.UserId).FirstOrDefault();
+            threadEntry.User = user;
         }
 
         return threadEntry;

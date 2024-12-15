@@ -2,10 +2,11 @@ namespace ThreadWars.Models
 {
   public interface IThreadMedia
   {
-    public string url { get; set; }
-    public string type { get; set; }
-    public int height { get; set; }
-    public int width { get; set; }
+    public string Url { get; set; }
+    public string Type { get; set; }
+    public int Height { get; set; }
+    public int Width { get; set; }
 
   }
 }
+

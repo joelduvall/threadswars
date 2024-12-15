@@ -15,7 +15,7 @@ namespace ThreadWars.Models
       public string? Content { get; set; }
 
       [BsonElement("media")]
-      public IThreadMedia? Media { get; set; }
+      public IThreadMedia[]? Media { get; set; }
 
       [BsonElement("likes")]
       public string[]? Likes { get; set; }

@@ -8,6 +8,7 @@ namespace ThreadWars.Models
     {
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
+        [BsonElement("_id")]
         public string Id { get; set; }
 
         [BsonElement("username")]
